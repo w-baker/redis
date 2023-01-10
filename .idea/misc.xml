@@ -4,6 +4,8 @@
     <option name="originalFiles">
       <list>
         <option value="$PROJECT_DIR$/springDataRedis/pom.xml" />
+        <option value="$PROJECT_DIR$/jedis/pom.xml" />
+        <option value="$PROJECT_DIR$/hm-dianping/pom.xml" />
       </list>
     </option>
   </component>
