@@ -1,13 +1,23 @@
 package com.hmdp.utils;
 
+import ch.qos.logback.core.util.TimeUtil;
+import cn.hutool.core.bean.BeanUtil;
+import cn.hutool.core.util.StrUtil;
 import com.hmdp.dto.UserDTO;
 import com.hmdp.entity.User;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.redis.core.StringRedisTemplate;
 import org.springframework.web.servlet.HandlerInterceptor;
 
 import javax.servlet.http.Cookie;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
+import java.util.Map;
+import java.util.concurrent.TimeUnit;
+
+import static com.hmdp.utils.RedisConstants.LOGIN_USER_KEY;
+import static com.hmdp.utils.RedisConstants.LOGIN_USER_TTL;
 
 /**
  * @Author W-ch
@@ -19,19 +29,13 @@ import javax.servlet.http.HttpSession;
 public class LoginInterceptor implements HandlerInterceptor {
     @Override
     public boolean preHandle(HttpServletRequest request, HttpServletResponse response, Object handler) throws Exception {
-        // 获取session
-        HttpSession session = request.getSession();
-        // 获取session中的用户
-        UserDTO user = (UserDTO) session.getAttribute("user");
-        // 判断用户是否存在
+        // 判断是否需要拦截
+        UserDTO user = UserHolder.getUser();
         if (user == null) {
-            // 不存在则,拦截,返回401状态码
+            // 拦截，设置拦截状态码
             response.setStatus(401);
             return false;
         }
-        // 存在，保存用户信息到TheadLocal
-        UserHolder.saveUser(user);
-        // 放行
         return true;
     }
     
